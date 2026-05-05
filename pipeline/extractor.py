@@ -27,10 +27,23 @@ def _extract_from_pdf(file_path: str) -> str:
 
 def _extract_from_docx(file_path: str) -> str:
     doc = Document(file_path)
-    paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
-    if not paragraphs:
-        raise ValueError("Could not extract any text from DOCX.")
-    return "\n".join(paragraphs)
+    parts = []
+
+    # Read paragraphs
+    for para in doc.paragraphs:
+        if para.text.strip():
+            parts.append(para.text.strip())
+
+    # Read tables too ← THIS IS THE MISSING PIECE
+    for table in doc.tables:
+        for row in table.rows:
+            row_text = " — ".join(
+                cell.text.strip() for cell in row.cells if cell.text.strip()
+            )
+            if row_text:
+                parts.append(row_text)
+
+    return "\n".join(parts)
 
 def validate_text(text: str, min_chars: int = 200) -> bool:
     """Sanity check — is there enough text to work with?"""
