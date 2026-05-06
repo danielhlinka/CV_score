@@ -1,6 +1,7 @@
 ﻿import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from pipeline.experience import extract_job_durations, total_experience_score, combined_seniority
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -43,13 +44,11 @@ SENIORITY_TEMPLATES = {
 SECTION_HEADERS = {
     "skills":     ["skills", "skill"],
     "education":  ["education"],
-    "experience": ["experience", "work experience"],
 }
 
 SECTION_WEIGHTS = {
-    "skills":     0.50,
-    "education":  0.25,
-    "experience": 0.15,
+    "skills":     0.55,
+    "education":  0.35,
     "other":      0.10,
 }
 
@@ -104,8 +103,17 @@ def enrich_cv(parsed: dict) -> dict:
         for k, v in seniority_embeddings.items()
     }
 
-    parsed["role_category"]    = max(role_scores, key=role_scores.get)
-    parsed["role_scores"]      = {k: round(v, 3) for k, v in role_scores.items()}
-    parsed["seniority"]        = max(sen_scores, key=sen_scores.get)
-    parsed["seniority_scores"] = {k: round(v, 3) for k, v in sen_scores.items()}
+    jobs = extract_job_durations(text)
+    years = sum(j["years"] for j in jobs)
+    seniority, seniority_combined = combined_seniority(sen_scores, years)
+
+    parsed["role_category"]      = max(role_scores, key=role_scores.get)
+    parsed["role_scores"]        = {k: round(v, 3) for k, v in role_scores.items()}
+    parsed["seniority"]          = seniority
+    parsed["seniority_scores"]   = {k: round(v, 3) for k, v in sen_scores.items()}
+    parsed["seniority_combined"] = seniority_combined
+    parsed["jobs"]               = extract_job_durations(text)
+    parsed["total_exp_score"]    = total_experience_score(jobs)
+    parsed["years_experience"]   = years
+
     return parsed
