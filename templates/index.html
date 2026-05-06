@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Scorer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<div class="container py-5" style="max-width: 700px;">
+  <h2 class="mb-4">📋 Job Post Builder</h2>
+
+  <form action="/score" method="POST" enctype="multipart/form-data">
+
+    <!-- Job Title -->
+    <div class="mb-3">
+      <label class="form-label">Job Title</label>
+      <input type="text" class="form-control" name="job_title" placeholder="e.g. Backend Developer" required>
+    </div>
+
+    <!-- Seniority -->
+    <div class="mb-3">
+      <label class="form-label">Seniority Expected</label>
+      <select class="form-select" name="seniority">
+        <option value="intern">Intern</option>
+        <option value="junior">Junior</option>
+        <option value="mid" selected>Mid</option>
+        <option value="senior">Senior</option>
+        <option value="lead">Lead</option>
+      </select>
+    </div>
+
+    <!-- Years Required -->
+    <div class="mb-3">
+      <label class="form-label">Minimum Years of Experience</label>
+      <input type="number" class="form-control" name="years_required" min="0" max="30" value="2">
+    </div>
+
+    <!-- Skills -->
+    <div class="mb-3">
+      <label class="form-label">Required Skills <span class="text-muted">(comma separated)</span></label>
+      <input type="text" class="form-control" name="skills" placeholder="e.g. Python, Flask, PostgreSQL, Docker">
+    </div>
+
+    <!-- Education -->
+    <div class="mb-3">
+      <label class="form-label">Education Required</label>
+      <select class="form-select" name="education">
+        <option value="none">None required</option>
+        <option value="high_school">High School</option>
+        <option value="bachelor">Bachelor's</option>
+        <option value="master">Master's</option>
+        <option value="phd">PhD</option>
+      </select>
+    </div>
+
+    <!-- CV Upload -->
+    <div class="mb-4">
+      <label class="form-label">Upload CV <span class="text-muted">(.pdf)</span></label>
+      <input type="file" class="form-control" name="cv" accept=".pdf" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Score CV 🚀</button>
+
+  </form>
+</div>
+
+</body>
+</html>
