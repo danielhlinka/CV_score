@@ -1,4 +1,5 @@
 ﻿import os
+import re
 import pdfplumber
 from docx import Document
 
@@ -48,3 +49,53 @@ def _extract_from_docx(file_path: str) -> str:
 def validate_text(text: str, min_chars: int = 200) -> bool:
     """Sanity check — is there enough text to work with?"""
     return len(text.strip()) >= min_chars
+
+
+SECTION_HEADERS = {
+    "work": r'work experience|experience|employment|pracovné skúsenosti|zamestnanie',
+    "skills": r'skills|technical skills|zručnosti|znalosti',
+    "education": r'education|vzdelanie|qualifications',
+}
+
+
+def extract_sections(text: str) -> dict:
+    sections = {"work": "", "skills": "", "education": "", "other": ""}
+
+    # find all header positions
+    header_pattern = r'(' + '|'.join(SECTION_HEADERS.values()) + r')'
+    splits = re.split(header_pattern, text, flags=re.IGNORECASE)
+
+    current = "other"
+    for chunk in splits:
+        matched = False
+        for section, pattern in SECTION_HEADERS.items():
+            if re.fullmatch(pattern, chunk.strip(), re.IGNORECASE):
+                current = section
+                matched = True
+                break
+        if not matched:
+            sections[current] += chunk
+
+    return sections
+KNOWN_SKILLS = [
+    "python", "java", "php", "html", "css", "javascript", "c", "c++", "c#",
+    "sql", "postgresql", "mysql", "mongodb", "flask", "django", "react",
+    "docker", "git", "linux", "blender", "3d modeling", "animation",
+    "microsoft word", "excel", "powerpoint", "typescript", "node", "aws"
+]
+
+def extract_skills(text: str) -> list:
+    text_lower = text.lower()
+    return [skill for skill in KNOWN_SKILLS if skill in text_lower]
+
+def extract_education(text: str) -> str:
+    text_lower = text.lower()
+    if any(k in text_lower for k in ["university", "univerzita", "bachelor", "utb"]):
+        return "bachelor"
+    if any(k in text_lower for k in ["master", "ing.", "mgr."]):
+        return "master"
+    if any(k in text_lower for k in ["phd", "doc.", "prof."]):
+        return "phd"
+    if any(k in text_lower for k in ["secondary", "high school", "spše", "stredná", "gymnázium"]):
+        return "high_school"
+    return "none"

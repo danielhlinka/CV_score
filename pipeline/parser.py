@@ -10,6 +10,7 @@ def _extract_phone(text: str) -> Optional[str]:
     match = re.search(r'[\+]?[\d][\d\s\-\.\(\)]{7,}[\d]', text)
     return match.group(0).strip() if match else None
 
+
 def parse_cv(raw_text: str) -> dict:
 
     return {

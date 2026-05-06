@@ -2,6 +2,7 @@
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from pipeline.experience import extract_job_durations, total_experience_score, combined_seniority
+from pipeline.extractor import extract_skills, extract_education
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -89,6 +90,8 @@ def _weighted_embedding(text: str) -> np.ndarray:
 
     return cv_emb / total_weight if total_weight > 0 else cv_emb
 
+def get_embedding(text: str):
+    return _weighted_embedding(text)
 
 def enrich_cv(parsed: dict) -> dict:
     text = parsed["raw_text"]
@@ -115,5 +118,7 @@ def enrich_cv(parsed: dict) -> dict:
     parsed["jobs"]               = extract_job_durations(text)
     parsed["total_exp_score"]    = total_experience_score(jobs)
     parsed["years_experience"]   = years
+    parsed["skills"]             = extract_skills(text)
+    parsed["education"]          = extract_education(text)
 
     return parsed
