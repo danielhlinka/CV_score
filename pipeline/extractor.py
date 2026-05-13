@@ -99,6 +99,11 @@ SKILL_GROUPS = {
     "mentoring":            ["mentoring", "mentored"],
     "stakeholder management": ["stakeholder", "stakeholders"],
     "strategic planning":   ["strategic planning", "strategy"],
+    # Data/architecture canonical groups
+    "spark":                ["spark", "apache spark", "pyspark", "databricks", "delta live tables", "delta lake"],
+    "snowflake":            ["snowflake"],
+    "cloud":                ["cloud", "multi-cloud", "multicloud", "azure", "aws", "gcp", "google cloud"],
+    "architecture":         ["architecture", "architect", "solution architect", "data architect", "enterprise architecture"],
 }
 
 KNOWN_SKILLS = [
@@ -107,6 +112,7 @@ KNOWN_SKILLS = [
     "sql", "postgresql", "mysql", "mongodb", "flask", "django", "react",
     "docker", "git", "linux", "blender", "3d modeling", "animation",
     "microsoft word", "excel", "powerpoint", "typescript", "node", "aws",
+    "azure", "gcp", "terraform", "ci/cd", "rag", "langchain", "langgraph",
     # Management (ungrouped — no synonyms)
     "hiring", "budget", "p&l", "cross-functional", "roadmap", "okr",
     "product management", "project management", "risk management",
@@ -130,6 +136,8 @@ def extract_skills(text: str) -> list:
     # Ungrouped skills from KNOWN_SKILLS
     for skill in KNOWN_SKILLS:
         if re.search(rf'\b{re.escape(skill)}\b', text_lower):
-            found.append(skill)
+            if skill not in seen:
+                found.append(skill)
+                seen.add(skill)
 
     return found

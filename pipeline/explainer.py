@@ -1,9 +1,11 @@
+import logging
 import os
-from openai import OpenAI
+from anthropic import Anthropic
 from dotenv import load_dotenv
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+DEFAULT_ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
+logger = logging.getLogger(__name__)
 
 def explain(result: dict) -> str:
     cv = result["cv"]
@@ -57,12 +59,24 @@ Use exactly this format:
 """
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=1000
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"⚠️ Could not generate explanation: {e}"
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            return "⚠️ Could not generate explanation: ANTHROPIC_API_KEY is missing."
 
+        client = Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model=DEFAULT_ANTHROPIC_MODEL,
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}],
+        )
+
+        parts = [
+            block.text for block in response.content
+            if getattr(block, "type", None) == "text" and getattr(block, "text", "")
+        ]
+        if not parts:
+            return "⚠️ Could not generate explanation: empty response from Anthropic."
+        return "\n".join(parts)
+    except Exception:
+        logger.exception("Could not generate explanation from Anthropic.")
+        return "⚠️ Could not generate explanation right now. Please try again later."

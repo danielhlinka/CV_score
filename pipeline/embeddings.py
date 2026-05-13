@@ -1,63 +1,61 @@
-﻿import numpy as np
+﻿import hashlib
+import re
+
+import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+from pipeline import ROLE_CATEGORIES, RoleCategory
 
-SECTION_HEADERS = {
-    "skills":    ["skills", "skill"],
-    "education": ["education"],
-}
+_MODEL = None
 
-SECTION_WEIGHTS = {
-    "skills":    0.55,
-    "education": 0.35,
-    "other":     0.10,
-}
-
-ROLE_CATEGORIES = [
-    "software", "data", "design", "ops",
-    "finance", "marketing", "logistics", "food_service"
-]
-
-_CATEGORY_EMBEDDINGS = {}
+_CATEGORY_EMBEDDINGS: dict[str, np.ndarray] = {}
 
 
-def _split_sections(text: str) -> dict:
-    lines = text.splitlines()
-    current = "other"
-    sections = {k: [] for k in list(SECTION_HEADERS.keys()) + ["other"]}
-    for line in lines:
-        lower = line.lower().strip()
-        matched = False
-        for section, headers in SECTION_HEADERS.items():
-            if any(lower == h for h in headers):
-                current = section
-                matched = True
-                break
-        if not matched:
-            sections[current].append(line)
-    return {k: "\n".join(v) for k, v in sections.items()}
+def _get_model():
+    global _MODEL
+    if _MODEL is not None:
+        return _MODEL
+    try:
+        _MODEL = SentenceTransformer("all-MiniLM-L6-v2", local_files_only=True)
+    except Exception:
+        try:
+            _MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+        except Exception:
+            _MODEL = False
+    return _MODEL
+
+
+def _hash_embedding(text: str, dims: int = 384) -> np.ndarray:
+    vec = np.zeros(dims)
+    for token in re.findall(r"\w+", text.lower()):
+        digest = hashlib.sha1(token.encode("utf-8")).digest()
+        idx = int.from_bytes(digest[:4], byteorder="big", signed=False) % dims
+        vec[idx] += 1.0
+    norm = np.linalg.norm(vec)
+    return vec / norm if norm else vec
+
+
+def embed_text(text: str) -> np.ndarray:
+    cleaned = (text or "").strip()
+    if not cleaned:
+        return np.zeros(384)
+    model = _get_model()
+    if model is False:
+        return _hash_embedding(cleaned)
+    return model.encode(cleaned)
 
 
 def get_embedding(text: str) -> np.ndarray:
-    sections = _split_sections(text)
-    cv_emb = np.zeros(384)
-    total_weight = 0
-    for section, content in sections.items():
-        if content.strip():
-            emb = model.encode(content)
-            w = SECTION_WEIGHTS.get(section, 0.1)
-            cv_emb += emb * w
-            total_weight += w
-    return cv_emb / total_weight if total_weight > 0 else cv_emb
+    # Backward-compatible alias used across the project.
+    return embed_text(text)
 
 
-def classify_role(title: str) -> str:
-    title_emb = get_embedding(title)
+def classify_role(title: str) -> RoleCategory:
+    title_emb = embed_text(title)
     scores = {}
     for cat in ROLE_CATEGORIES:
         if cat not in _CATEGORY_EMBEDDINGS:
-            _CATEGORY_EMBEDDINGS[cat] = get_embedding(cat)
+            _CATEGORY_EMBEDDINGS[cat] = embed_text(cat)
         scores[cat] = float(cosine_similarity([title_emb], [_CATEGORY_EMBEDDINGS[cat]])[0][0])
     return max(scores, key=scores.get)

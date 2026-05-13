@@ -11,6 +11,12 @@
 <div class="container py-5" style="max-width: 700px;">
   <h2 class="mb-4">📋 Job Post Builder</h2>
 
+  {% if error_message %}
+  <div class="alert alert-danger" role="alert">
+    {{ error_message }}
+  </div>
+  {% endif %}
+
   <form action="/score" method="POST" enctype="multipart/form-data">
 
     <!-- Job Title -->
@@ -73,11 +79,11 @@
 
     <!-- CV Upload -->
     <div class="mb-4">
-      <label class="form-label">Upload CV <span class="text-muted">(.pdf)</span></label>
-      <input type="file" class="form-control" name="cv" accept=".pdf" required>
+      <label class="form-label">Upload CV <span class="text-muted">(.pdf, .docx)</span></label>
+      <input type="file" class="form-control" name="cv" accept=".pdf,.docx" required>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Score CV 🚀</button>
+    <button id="submitBtn" type="submit" class="btn btn-primary w-100">Score CV 🚀</button>
 
     <div id="loading" class="text-center mt-4" style="display: none;">
      <div class="spinner-border text-light" role="status"></div>
@@ -89,7 +95,8 @@
 
    <script>
     document.querySelector("form").addEventListener("submit", function() {
-      document.getElementById("submitBtn").disabled = true;
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
       document.getElementById("loading").style.display = "block";
     });
   </script>

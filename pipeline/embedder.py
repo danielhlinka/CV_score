@@ -1,78 +1,119 @@
-﻿from sklearn.metrics.pairwise import cosine_similarity
-from pipeline.embeddings import get_embedding, model
-from pipeline.experience import extract_job_durations, total_experience_score, combined_seniority
-from pipeline.extractor import extract_skills, extract_education
+from typing import Any
 
-ROLE_TEMPLATES = {
-    "software": (
-        "A software developer and programmer writing code in Python, Java, C, PHP, HTML, CSS. "
-        "Studying ICT and software engineering. Building applications, scripts and web development. "
-        "Internship at IBM developer team. Interested in AI, machine learning and programming."
-    ),
-    "data": (
-        "A data analyst or data scientist working with machine learning, statistics, pandas, "
-        "numpy, and data visualization. Analyses datasets and builds predictive models."
-    ),
-    "design": (
-        "A UI/UX designer creating wireframes and prototypes in Figma. Focused on user research, "
-        "visual design, graphic design, typography, colour theory and improving user interfaces. "
-        "No programming involved."
-    ),
-    "ops": (
-        "A project manager or operations specialist working with logistics, supply chain, "
-        "warehouse management, agile, scrum, and process improvement."
-    ),
-    "finance": (
-        "An accountant or financial analyst working with budgeting, auditing, financial modeling, "
-        "risk management, and reporting."
-    ),
-    "marketing": (
-        "A digital marketer running SEO, social media campaigns, content creation, "
-        "Google Ads, and managing CRM tools."
-    ),
-}
+from sklearn.metrics.pairwise import cosine_similarity
 
-SENIORITY_TEMPLATES = {
-    "intern":  "student intern learning first experience trainee",
-    "junior":  "junior developer 1 year entry level learning growing",
-    "mid":     "developer 3 years experience independent projects delivered",
-    "senior":  "senior led team architected scaled mentored owned delivered",
-    "lead":    "lead manager director principal staff architected strategic vision",
-}
+from pipeline import (
+    EnrichedCV,
+    ParsedCV,
+    ROLE_TEMPLATES,
+    SENIORITY_TEMPLATES,
+)
+from pipeline.embeddings import get_embedding
+from pipeline.experience import combined_seniority, experience_score
 
-template_embeddings  = {k: model.encode(v) for k, v in ROLE_TEMPLATES.items()}
-seniority_embeddings = {k: model.encode(v) for k, v in SENIORITY_TEMPLATES.items()}
+_ROLE_TEMPLATE_EMBEDDINGS: dict[str, Any] | None = None
+_SENIORITY_TEMPLATE_EMBEDDINGS: dict[str, Any] | None = None
 
 
-def enrich_cv(parsed: dict) -> dict:
-    text = parsed["raw_text"]
-    cv_emb = get_embedding(text)
+def _get_role_template_embeddings() -> dict[str, Any]:
+    global _ROLE_TEMPLATE_EMBEDDINGS
+    if _ROLE_TEMPLATE_EMBEDDINGS is None:
+        _ROLE_TEMPLATE_EMBEDDINGS = {k: get_embedding(v) for k, v in ROLE_TEMPLATES.items()}
+    return _ROLE_TEMPLATE_EMBEDDINGS
 
-    role_scores = {
+
+def _get_seniority_template_embeddings() -> dict[str, Any]:
+    global _SENIORITY_TEMPLATE_EMBEDDINGS
+    if _SENIORITY_TEMPLATE_EMBEDDINGS is None:
+        _SENIORITY_TEMPLATE_EMBEDDINGS = {k: get_embedding(v) for k, v in SENIORITY_TEMPLATES.items()}
+    return _SENIORITY_TEMPLATE_EMBEDDINGS
+
+
+def _normalized_signal_scores(signals: dict[str, int]) -> dict[str, float]:
+    if not signals:
+        return {}
+    max_value = max(signals.values())
+    if max_value <= 0:
+        return {k: 0.0 for k in signals}
+    return {k: float(v) / float(max_value) for k, v in signals.items()}
+
+
+def enrich_cv(parsed: ParsedCV) -> EnrichedCV:
+    normalized = parsed["normalized"]
+    skills = normalized.get("skills", [])
+    jobs = normalized.get("experience_entries", [])
+    years = float(normalized.get("experience_years", 0.0))
+
+    role_signals = normalized.get("role_signals", {})
+    role_signal_scores = _normalized_signal_scores(role_signals)
+
+    seniority_signals = normalized.get("seniority_signals", {})
+    seniority_signal_scores = _normalized_signal_scores(seniority_signals)
+
+    role_hint = normalized.get("strongest_role_signal", "")
+    titles_text = " ".join(j.get("title", "") for j in jobs if j.get("title") and j.get("title") != "unknown")
+
+    # Embeddings are built only from normalized fields (skills, titles, role hints), not raw CV blobs.
+    semantic_profile = " ".join(
+        part for part in [" ".join(skills), titles_text, role_hint] if part
+    )
+    cv_emb = get_embedding(semantic_profile)
+
+    role_template_embeddings = _get_role_template_embeddings()
+    role_semantic_scores = {
         k: float(cosine_similarity([cv_emb], [v])[0][0])
-        for k, v in template_embeddings.items()
-    }
-    sen_scores = {
-        k: float(cosine_similarity([cv_emb], [v])[0][0])
-        for k, v in seniority_embeddings.items()
+        for k, v in role_template_embeddings.items()
     }
 
-    jobs = extract_job_durations(text)
-    years = sum(j["years"] for j in jobs)
-    seniority, seniority_combined = combined_seniority(sen_scores, years)
+    role_scores = {}
+    for role in role_semantic_scores:
+        semantic = role_semantic_scores.get(role, 0.0)
+        signal = role_signal_scores.get(role, 0.0)
+        role_scores[role] = round((semantic * 0.7) + (signal * 0.3), 4)
+
+    seniority_profile = " ".join(
+        part
+        for part in [
+            titles_text,
+            " ".join(skills[:20]),
+            normalized.get("strongest_seniority_signal", ""),
+            f"{years:.2f} years experience",
+        ]
+        if part
+    )
+    seniority_emb = get_embedding(seniority_profile)
+
+    seniority_template_embeddings = _get_seniority_template_embeddings()
+    sen_sem_scores = {
+        k: float(cosine_similarity([seniority_emb], [v])[0][0])
+        for k, v in seniority_template_embeddings.items()
+    }
+
+    sen_scores = {}
+    for level in sen_sem_scores:
+        semantic = sen_sem_scores.get(level, 0.0)
+        signal = seniority_signal_scores.get(level, 0.0)
+        sen_scores[level] = round((semantic * 0.75) + (signal * 0.25), 4)
+
+    seniority, seniority_combined = combined_seniority(sen_scores, int(round(years)))
 
     top_roles = sorted(role_scores, key=role_scores.get, reverse=True)[:2]
-    parsed["role_category"] = top_roles[0]
-    parsed["role_category_secondary"] = top_roles[1]
-    parsed["role_scores"] = {k: round(v, 3) for k, v in role_scores.items()}
-    parsed["role_scores"]        = {k: round(v, 3) for k, v in role_scores.items()}
-    parsed["seniority"]          = seniority
-    parsed["seniority_scores"]   = {k: round(v, 3) for k, v in sen_scores.items()}
-    parsed["seniority_combined"] = seniority_combined
-    parsed["jobs"]               = extract_job_durations(text)
-    parsed["total_exp_score"]    = total_experience_score(jobs)
-    parsed["years_experience"]   = years
-    parsed["skills"]             = extract_skills(text)
-    parsed["education"]          = extract_education(text)
+    if len(top_roles) < 2:
+        top_roles.append(top_roles[0] if top_roles else "software")
 
-    return parsed
+    return {
+        **parsed,
+        "role_category": top_roles[0],
+        "role_category_secondary": top_roles[1],
+        "role_scores": {k: round(v, 3) for k, v in role_scores.items()},
+        "seniority": seniority,
+        "seniority_scores": {k: round(v, 3) for k, v in sen_scores.items()},
+        "seniority_combined": seniority_combined,
+        "jobs": jobs,
+        "total_exp_score": experience_score(years),
+        "years_experience": years,
+        "skills": skills,
+        "education": normalized.get("education", "none"),
+        "parser_confidence": normalized.get("parser_confidence", "low"),
+        "parser_warnings": normalized.get("warnings", []),
+    }

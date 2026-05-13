@@ -1,12 +1,15 @@
 ﻿import logging
 
+from pipeline import VALID_SENIORITY
+
 logger = logging.getLogger("pipeline.sanity")
 
 def sanity_check(result: dict) -> None:
     cv       = result.get("cv", {})
-    job      = result.get("job", {})
     breakdown = result.get("breakdown", {})
     score    = result.get("final_score", 0)
+    parser_confidence = result.get("parser_confidence", cv.get("parser_confidence", "low"))
+    parser_warnings = result.get("parser_warnings", cv.get("parser_warnings", []))
 
     logger.info("=" * 45)
 
@@ -17,6 +20,8 @@ def sanity_check(result: dict) -> None:
     logger.info("[extractor]  role_category   : %s", cv.get("role_category", "MISSING"))
     logger.info("[extractor]  skills_count    : %d", len(cv.get("skills", [])))
     logger.info("[extractor]  skills          : %s", ", ".join(cv.get("skills", [])) or "NONE")
+    logger.info("[extractor]  parser_confidence: %s", parser_confidence)
+    logger.info("[extractor]  parser_warnings : %s", "; ".join(parser_warnings) if parser_warnings else "NONE")
 
     # --- matcher.py values ---
     logger.info("[matcher]     skills_score    : %.1f%%", breakdown.get("skills", 0) * 100)
@@ -32,9 +37,11 @@ def sanity_check(result: dict) -> None:
         logger.warning("[sanity]     ⚠ years_experience > 50 — likely parse error")
     if score > 1.0 or score < 0:
         logger.warning("[sanity]     ⚠ final_score out of range: %.2f", score)
-    if cv.get("seniority") not in ["junior", "mid", "senior", "lead", "executive"]:
+    if cv.get("seniority") not in VALID_SENIORITY:
         logger.warning("[sanity]     ⚠ Unknown seniority: %s", cv.get("seniority"))
     if not cv.get("education"):
         logger.warning("[sanity]     ⚠ No education detected")
+    if parser_confidence == "low":
+        logger.warning("[sanity]     ⚠ Parser confidence is low; score may be unreliable")
 
     logger.info("=" * 45)
