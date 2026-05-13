@@ -3,22 +3,35 @@
 Nástroj pro automatické hodnocení životopisu (CV) vůči pracovní pozici pomocí NLP a sémantického porovnávání.
 
 ## Použité modely
-> Lokální model: `all-MiniLM-L6-v2` · AI report: `GPT-4o-mini`
+> Lokální model: `all-MiniLM-L6-v2` · AI report: `Claude Sonnet` (default: `claude-sonnet-4-6`)
 
 ***
 
 ## Spuštění
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
+# alternativa cez Flask CLI (factory):
+flask --app app:create_app run
 ```
 
 Aplikace poběží na `http://localhost:5000`.  
-Do `.env` přidej svůj OpenAI klíč:
+Do `.env` přidej svoj Anthropic klíč:
 
 ```
-OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=...
+# optional override:
+# ANTHROPIC_MODEL=claude-sonnet-4-6
+```
+
+## CI / test gate
+
+```bash
+python -m compileall -q app.py main.py pipeline
+python -m unittest discover -s tests -p "test*.py" -v
 ```
 
 ***
@@ -39,7 +52,7 @@ experience.py      – parsuje pracovní zkušenosti, délku a seniority
 matcher.py         – porovná CV s požadavky pozice, vrátí skóre
     │
     ▼
-explainer.py       – GPT-4o-mini vygeneruje Markdown report
+explainer.py       – Claude Sonnet vygeneruje Markdown report
 sanity_check.py    – zaloguje hodnoty a upozorní na podezřelé výsledky
 ```
 
@@ -57,11 +70,11 @@ sanity_check.py    – zaloguje hodnoty a upozorní na podezřelé výsledky
 
 ## Přístup k datům
 
-CV není ukládáno – zpracovává se výhradně v paměti za běhu požadavku.
+CV se zpracovává pouze po dobu požadavku: soubor je uložen dočasně pro extrakci textu a následně ihned smazán.
 
 - **Extrakce** probíhá čistě textově (regex + řádkový parsing), bez externích modelů.
 - **Embeddingy** jsou generovány lokálně pomocí `all-MiniLM-L6-v2` (sentence-transformers) – žádná data neopouštějí server, pokud nepoužiješ explainer.
-- **Explainer** odesílá strukturovaná metadata (seniority, skills, skóre) na OpenAI API – nikdy celý text CV.
+- **Explainer** odesílá štruktúrované metadáta (seniority, skills, skóre) na Anthropic API – nikdy celý text CV.
 
 ***
 
@@ -75,7 +88,7 @@ pipeline/
 ├── experience.py      # pracovní historie, délka, level
 ├── matcher.py         # výsledné skóre
 ├── job_parser.py      # parsování formuláře s pozicí
-├── explainer.py       # GPT report
+├── explainer.py       # LLM report
 ├── sanity_check.py    # debug logging
 └── __init__.py
 app.py                 # Flask server

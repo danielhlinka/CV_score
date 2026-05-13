@@ -32,6 +32,7 @@ Plan item 12 [ ] Revert `pipeline/explainer.py` from `ANTHROPIC_API_KEY`/`Anthro
 Plan item 13 [ ] Revert `README.md` references from Anthropic/Sonnet back to OpenAI model/key documentation.
 Plan item 14[ ] Review pointless ci.yml. CI/CD is not required nor needed for this project.
 Plan item 15[ ] Review code structure and code architecture.
+Plan item 16[ ] Suggest a local small model for to substitute the OpenAI API calls. This will allow the project to be fully functional without any external API keys and will speed up testing and iteration.
 
 Issue 5: parser/scoring pipeline produced misleading outputs on arbitrary CV layouts.
 Review notes: section-template assumptions and date parsing fragility caused false `0 year(s)` and intern-like outcomes when extraction quality dropped.
