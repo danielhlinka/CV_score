@@ -19,6 +19,20 @@
       <input type="text" class="form-control" name="job_title" placeholder="e.g. Backend Developer" required>
     </div>
 
+    <!-- Role Category -->
+    <div class="mb-3">
+      <label class="form-label">Role Category</label>
+      <select class="form-select" name="role_category">
+        <option value="software" selected>Software / Engineering</option>
+        <option value="management">Management / Leadership</option>
+        <option value="data">Data / Analytics</option>
+        <option value="design">Design / UX</option>
+        <option value="ops">Operations / Project Management</option>
+        <option value="finance">Finance / Accounting</option>
+        <option value="marketing">Marketing / Growth</option>
+      </select>
+    </div>
+
     <!-- Seniority -->
     <div class="mb-3">
       <label class="form-label">Seniority Expected</label>
@@ -55,6 +69,8 @@
       </select>
     </div>
 
+
+
     <!-- CV Upload -->
     <div class="mb-4">
       <label class="form-label">Upload CV <span class="text-muted">(.pdf)</span></label>
@@ -63,8 +79,19 @@
 
     <button type="submit" class="btn btn-primary w-100">Score CV 🚀</button>
 
+    <div id="loading" class="text-center mt-4" style="display: none;">
+     <div class="spinner-border text-light" role="status"></div>
+      <p class="mt-2 text-muted">Analyzing CV...</p>
+    </div>
+
   </form>
 </div>
 
+   <script>
+    document.querySelector("form").addEventListener("submit", function() {
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("loading").style.display = "block";
+    });
+  </script>
 </body>
 </html>

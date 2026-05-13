@@ -77,25 +77,59 @@ def extract_sections(text: str) -> dict:
             sections[current] += chunk
 
     return sections
+
+def extract_education(text: str) -> str:
+    text_lower = text.lower()
+
+    if any(k in text_lower for k in ["phd", "ph.d", "doc.", "prof.", "doctorate"]):
+        return "phd"
+    if any(k in text_lower for k in ["master", "msc", "m.sc", "ing.", "mgr.", "mba"]):
+        return "master"
+    if any(k in text_lower for k in ["university", "univerzita", "bachelor", "bsc", "b.sc", "utb"]):
+        return "bachelor"
+    if any(k in text_lower for k in ["secondary", "high school", "spše", "stredná", "gymnázium"]):
+        return "high_school"
+
+    return "none"
+
+SKILL_GROUPS = {
+    # Management & leadership (grouped to avoid duplicates)
+    "leadership":           ["leadership", "lead", "led"],
+    "people management":    ["people management", "team management", "team lead", "managed"],
+    "mentoring":            ["mentoring", "mentored"],
+    "stakeholder management": ["stakeholder", "stakeholders"],
+    "strategic planning":   ["strategic planning", "strategy"],
+}
+
 KNOWN_SKILLS = [
+    # Technical
     "python", "java", "php", "html", "css", "javascript", "c", "c++", "c#",
     "sql", "postgresql", "mysql", "mongodb", "flask", "django", "react",
     "docker", "git", "linux", "blender", "3d modeling", "animation",
-    "microsoft word", "excel", "powerpoint", "typescript", "node", "aws"
+    "microsoft word", "excel", "powerpoint", "typescript", "node", "aws",
+    # Management (ungrouped — no synonyms)
+    "hiring", "budget", "p&l", "cross-functional", "roadmap", "okr",
+    "product management", "project management", "risk management",
+    # Delivery & process
+    "agile", "scrum", "kanban", "sprint", "delivery",
 ]
 
 def extract_skills(text: str) -> list:
     text_lower = text.lower()
-    return [skill for skill in KNOWN_SKILLS if skill in text_lower]
+    found = []
+    seen = set()
 
-def extract_education(text: str) -> str:
-    text_lower = text.lower()
-    if any(k in text_lower for k in ["university", "univerzita", "bachelor", "utb"]):
-        return "bachelor"
-    if any(k in text_lower for k in ["master", "ing.", "mgr."]):
-        return "master"
-    if any(k in text_lower for k in ["phd", "doc.", "prof."]):
-        return "phd"
-    if any(k in text_lower for k in ["secondary", "high school", "spše", "stredná", "gymnázium"]):
-        return "high_school"
-    return "none"
+    # Grouped skills — return canonical name if any variant matches
+    for canonical, variants in SKILL_GROUPS.items():
+        for variant in variants:
+            if re.search(rf'\b{re.escape(variant)}\b', text_lower):
+                found.append(canonical)
+                seen.add(canonical)
+                break  # first match wins, skip other variants
+
+    # Ungrouped skills from KNOWN_SKILLS
+    for skill in KNOWN_SKILLS:
+        if re.search(rf'\b{re.escape(skill)}\b', text_lower):
+            found.append(skill)
+
+    return found

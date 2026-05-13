@@ -1,16 +1,13 @@
-﻿import numpy as np
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+﻿from sklearn.metrics.pairwise import cosine_similarity
+from pipeline.embeddings import get_embedding, model
 from pipeline.experience import extract_job_durations, total_experience_score, combined_seniority
 from pipeline.extractor import extract_skills, extract_education
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
-
 ROLE_TEMPLATES = {
     "software": (
-        "A software developer studying ICT specialization at technical high school. "
-        "Completed an internship at IBM in the Devices Department attending developer team consultations. "
-        "Programs in Python, Java, JavaScript, PHP and HTML. Builds applications and is interested in AI development."
+        "A software developer and programmer writing code in Python, Java, C, PHP, HTML, CSS. "
+        "Studying ICT and software engineering. Building applications, scripts and web development. "
+        "Internship at IBM developer team. Interested in AI, machine learning and programming."
     ),
     "data": (
         "A data analyst or data scientist working with machine learning, statistics, pandas, "
@@ -18,7 +15,8 @@ ROLE_TEMPLATES = {
     ),
     "design": (
         "A UI/UX designer creating wireframes and prototypes in Figma. Focused on user research, "
-        "visual design, and improving user interfaces."
+        "visual design, graphic design, typography, colour theory and improving user interfaces. "
+        "No programming involved."
     ),
     "ops": (
         "A project manager or operations specialist working with logistics, supply chain, "
@@ -42,60 +40,13 @@ SENIORITY_TEMPLATES = {
     "lead":    "lead manager director principal staff architected strategic vision",
 }
 
-SECTION_HEADERS = {
-    "skills":     ["skills", "skill"],
-    "education":  ["education"],
-}
-
-SECTION_WEIGHTS = {
-    "skills":     0.55,
-    "education":  0.35,
-    "other":      0.10,
-}
-
 template_embeddings  = {k: model.encode(v) for k, v in ROLE_TEMPLATES.items()}
 seniority_embeddings = {k: model.encode(v) for k, v in SENIORITY_TEMPLATES.items()}
 
 
-def _split_sections(text: str) -> dict:
-    lines = text.splitlines()
-    current = "other"
-    sections = {k: [] for k in list(SECTION_HEADERS.keys()) + ["other"]}
-
-    for line in lines:
-        lower = line.lower().strip()
-        matched = False
-        for section, headers in SECTION_HEADERS.items():
-            if any(lower == h for h in headers):
-                current = section
-                matched = True
-                break
-        if not matched:
-            sections[current].append(line)
-
-    return {k: "\n".join(v) for k, v in sections.items()}
-
-
-def _weighted_embedding(text: str) -> np.ndarray:
-    sections = _split_sections(text)
-    cv_emb = np.zeros(384)
-    total_weight = 0
-
-    for section, content in sections.items():
-        if content.strip():
-            emb = model.encode(content)
-            w = SECTION_WEIGHTS.get(section, 0.1)
-            cv_emb += emb * w
-            total_weight += w
-
-    return cv_emb / total_weight if total_weight > 0 else cv_emb
-
-def get_embedding(text: str):
-    return _weighted_embedding(text)
-
 def enrich_cv(parsed: dict) -> dict:
     text = parsed["raw_text"]
-    cv_emb = _weighted_embedding(text)
+    cv_emb = get_embedding(text)
 
     role_scores = {
         k: float(cosine_similarity([cv_emb], [v])[0][0])
@@ -110,7 +61,10 @@ def enrich_cv(parsed: dict) -> dict:
     years = sum(j["years"] for j in jobs)
     seniority, seniority_combined = combined_seniority(sen_scores, years)
 
-    parsed["role_category"]      = max(role_scores, key=role_scores.get)
+    top_roles = sorted(role_scores, key=role_scores.get, reverse=True)[:2]
+    parsed["role_category"] = top_roles[0]
+    parsed["role_category_secondary"] = top_roles[1]
+    parsed["role_scores"] = {k: round(v, 3) for k, v in role_scores.items()}
     parsed["role_scores"]        = {k: round(v, 3) for k, v in role_scores.items()}
     parsed["seniority"]          = seniority
     parsed["seniority_scores"]   = {k: round(v, 3) for k, v in sen_scores.items()}

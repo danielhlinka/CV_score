@@ -8,4 +8,5 @@
         "years_required": int(form.get("years_required", 0)),
         "skills":         skills,
         "education":      form.get("education", "none").lower(),
+        "role_category":  form.get("role_category", "software").lower(),
     }
