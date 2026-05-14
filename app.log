@@ -381,3 +381,343 @@
 2026-05-14 00:56:46,592 INFO =============================================
 2026-05-14 00:56:46,632 INFO Retrying request to /v1/messages in 0.424871 seconds
 2026-05-14 00:56:47,073 INFO Retrying request to /v1/messages in 0.764428 seconds
+2026-05-15 00:29:12,942 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 73, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1226, in _execute_mock_call
+    raise effect
+OSError: disk full
+2026-05-15 00:29:27,455 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/explainer.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 00:29:27,463 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 73, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1226, in _execute_mock_call
+    raise effect
+OSError: disk full
+2026-05-15 00:29:40,743 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/explainer.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 00:29:40,751 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 73, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1226, in _execute_mock_call
+    raise effect
+OSError: disk full
+2026-05-15 00:29:48,954 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/explainer.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 00:29:48,961 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 73, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1226, in _execute_mock_call
+    raise effect
+OSError: disk full
+2026-05-15 00:30:17,388 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 80, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1232, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_uploads_behavior.py", line 83, in _partial_write_then_fail
+    raise OSError("disk full")
+OSError: disk full
+2026-05-15 00:30:24,217 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/explainer.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 00:30:24,225 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 80, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1232, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_uploads_behavior.py", line 83, in _partial_write_then_fail
+    raise OSError("disk full")
+OSError: disk full
+2026-05-15 00:32:32,339 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 80, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1232, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_uploads_behavior.py", line 83, in _partial_write_then_fail
+    raise OSError("disk full")
+OSError: disk full
+2026-05-15 00:32:32,341 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/explainer.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 00:32:45,380 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/explainer.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 00:32:45,389 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 80, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1232, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_uploads_behavior.py", line 83, in _partial_write_then_fail
+    raise OSError("disk full")
+OSError: disk full
+2026-05-15 01:23:22,542 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/output/explanation_service.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 01:23:22,738 INFO Retrying request to /chat/completions in 0.407737 seconds
+2026-05-15 01:23:23,156 INFO Retrying request to /chat/completions in 0.764246 seconds
+2026-05-15 01:23:23,926 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+        pool_request.request
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_sync/connection.py", line 101, in handle_request
+    raise exc
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_sync/connection.py", line 78, in handle_request
+    stream = self._connect(request)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_sync/connection.py", line 124, in _connect
+    stream = self._network_backend.connect_tcp(**kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_backends/sync.py", line 207, in connect_tcp
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_base_client.py", line 1037, in request
+    response = self._send_request(
+        request,
+        stream=stream or self._should_stream_response_body(request=request),
+        **kwargs,
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_client.py", line 440, in _send_request
+    return self._send_with_auth_retry(request, stream=stream, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_client.py", line 418, in _send_with_auth_retry
+    response = super()._send_request(request, stream=stream, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_base_client.py", line 964, in _send_request
+    return self._client.send(request, stream=stream, **kwargs)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/output/explanation_service.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/resources/chat/completions/completions.py", line 1212, in create
+    return self._post(
+           ~~~~~~~~~~^
+        "/chat/completions",
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<51 lines>...
+        stream_cls=Stream[ChatCompletionChunk],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/denishlinka/Desktop/dano/CV_score/venv/lib/python3.13/site-packages/openai/_base_client.py", line 1072, in request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+2026-05-15 01:23:23,948 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 80, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1232, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_uploads_behavior.py", line 83, in _partial_write_then_fail
+    raise OSError("disk full")
+OSError: disk full
+2026-05-15 01:23:39,422 ERROR Could not generate explanation from OpenAI.
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/pipeline/output/explanation_service.py", line 98, in explain
+    response = client.chat.completions.create(
+        model=self.model,
+        max_tokens=self.max_tokens,
+        messages=[{"role": "user", "content": prompt}],
+    )
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_explainer_behavior.py", line 60, in _raise_error
+    raise RuntimeError("boom")
+RuntimeError: boom
+2026-05-15 01:23:39,430 ERROR Failed to save uploaded CV: cv.pdf
+Traceback (most recent call last):
+  File "/Users/denishlinka/Desktop/dano/CV_score/web/uploads.py", line 80, in stage
+    validated.file_storage.save(staged_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1167, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1171, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1232, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/denishlinka/Desktop/dano/CV_score/tests/test_uploads_behavior.py", line 83, in _partial_write_then_fail
+    raise OSError("disk full")
+OSError: disk full

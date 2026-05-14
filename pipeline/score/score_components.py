@@ -1,23 +1,11 @@
-from pipeline import (
-    EDUCATION_LEVEL_RANK,
-    EnrichedCV,
-    JobProfile,
-    MatchResult,
-    ScoreBreakdown,
-    SENIORITY_LEVEL_RANK,
-)
-from pipeline.semantic import best_cosine_score, memoized_embedding
+from __future__ import annotations
 
-WEIGHTS = {
-    "skills":     0.40,
-    "seniority":  0.25,
-    "experience": 0.25,
-    "role":       0.05,
-    "education":  0.05,
-}
+from pipeline.constants import EDUCATION_LEVEL_RANK, SENIORITY_LEVEL_RANK
+from pipeline.contracts import EnrichedCV, JobProfile
+from pipeline.enrich.semantic_similarity import best_cosine_score, memoized_embedding
 
 
-def _skills_score(cv: EnrichedCV, job: JobProfile) -> float:
+def skills_score(cv: EnrichedCV, job: JobProfile) -> float:
     if not job["skills"]:
         return 1.0
     cv_skills = [skill.lower() for skill in cv.get("skills", [])]
@@ -42,7 +30,7 @@ def _skills_score(cv: EnrichedCV, job: JobProfile) -> float:
     return round(exact, 3)
 
 
-def _seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
+def seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
     cv_level = SENIORITY_LEVEL_RANK.get(cv.get("seniority", "junior"), 1)
     job_level = SENIORITY_LEVEL_RANK.get(job.get("seniority", "mid"), 2)
     diff = abs(cv_level - job_level)
@@ -54,7 +42,7 @@ def _seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
     return round(max(0.0, 1.0 - diff * 0.25), 3)
 
 
-def _experience_score(cv: EnrichedCV, job: JobProfile) -> float:
+def experience_score_component(cv: EnrichedCV, job: JobProfile) -> float:
     job_years = job.get("years_required", 0)
     if job_years == 0:
         return 1.0
@@ -70,8 +58,8 @@ def _experience_score(cv: EnrichedCV, job: JobProfile) -> float:
     return round(min(ratio, 1.0), 3)
 
 
-def _role_score(cv: EnrichedCV, job: JobProfile) -> float:
-    cv_role  = cv.get("role_category", "").lower()
+def role_score(cv: EnrichedCV, job: JobProfile) -> float:
+    cv_role = cv.get("role_category", "").lower()
     job_role = job.get("role_category", "").lower()
     confidence = cv.get("parser_confidence", "low")
     if not cv_role or not job_role:
@@ -81,31 +69,10 @@ def _role_score(cv: EnrichedCV, job: JobProfile) -> float:
     return 1.0 if cv_role == job_role else 0.2
 
 
-def _education_score(cv: EnrichedCV, job: JobProfile) -> float:
+def education_score(cv: EnrichedCV, job: JobProfile) -> float:
     cv_level = EDUCATION_LEVEL_RANK.get(cv.get("education", "none"), 0)
     job_level = EDUCATION_LEVEL_RANK.get(job.get("education", "none"), 0)
     if cv_level >= job_level:
         return 1.0
     diff = job_level - cv_level
     return round(max(0.0, 1.0 - diff * 0.25), 3)
-
-
-def match(cv: EnrichedCV, job: JobProfile) -> MatchResult:
-    scores: ScoreBreakdown = {
-        "skills":     _skills_score(cv, job),
-        "seniority":  _seniority_score(cv, job),
-        "experience": _experience_score(cv, job),
-        "role":       _role_score(cv, job),
-        "education":  _education_score(cv, job),
-    }
-
-    final = sum(scores[k] * WEIGHTS[k] for k in scores)
-
-    return {
-        "final_score": round(final, 3),
-        "breakdown":   scores,
-        "parser_confidence": cv.get("parser_confidence", "low"),
-        "parser_warnings": cv.get("parser_warnings", []),
-        "cv":          cv,
-        "job":         job,
-    }

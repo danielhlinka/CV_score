@@ -1,13 +1,11 @@
+from __future__ import annotations
+
 from functools import cache
 
-from pipeline import (
-    EnrichedCV,
-    ParsedCV,
-    ROLE_TEMPLATES,
-    SENIORITY_TEMPLATES,
-)
-from pipeline.experience import combined_seniority, experience_score
-from pipeline.semantic import Embedding, memoized_embedding, template_scores
+from pipeline.constants import ROLE_TEMPLATES, SENIORITY_TEMPLATES
+from pipeline.contracts import EnrichedCV, ParsedCV
+from pipeline.enrich.seniority_model import combined_seniority, experience_score
+from pipeline.enrich.semantic_similarity import Embedding, memoized_embedding, template_scores
 
 
 @cache
@@ -42,12 +40,9 @@ def enrich_cv(parsed: ParsedCV) -> EnrichedCV:
     seniority_signal_scores = _normalized_signal_scores(seniority_signals)
 
     role_hint = normalized.get("strongest_role_signal", "")
-    titles_text = " ".join(j.get("title", "") for j in jobs if j.get("title") and j.get("title") != "unknown")
+    titles_text = " ".join(job.get("title", "") for job in jobs if job.get("title") and job.get("title") != "unknown")
 
-    # Embeddings are built only from normalized fields (skills, titles, role hints), not raw CV blobs.
-    semantic_profile = " ".join(
-        part for part in [" ".join(skills), titles_text, role_hint] if part
-    )
+    semantic_profile = " ".join(part for part in [" ".join(skills), titles_text, role_hint] if part)
     cv_emb = memoized_embedding(semantic_profile)
 
     role_template_embeddings = _get_role_template_embeddings()
@@ -72,15 +67,15 @@ def enrich_cv(parsed: ParsedCV) -> EnrichedCV:
     seniority_emb = memoized_embedding(seniority_profile)
 
     seniority_template_embeddings = _get_seniority_template_embeddings()
-    sen_sem_scores = template_scores(seniority_emb, seniority_template_embeddings)
+    sem_seniority_scores = template_scores(seniority_emb, seniority_template_embeddings)
 
-    sen_scores = {}
-    for level in sen_sem_scores:
-        semantic = sen_sem_scores.get(level, 0.0)
+    seniority_scores = {}
+    for level in sem_seniority_scores:
+        semantic = sem_seniority_scores.get(level, 0.0)
         signal = seniority_signal_scores.get(level, 0.0)
-        sen_scores[level] = round((semantic * 0.75) + (signal * 0.25), 4)
+        seniority_scores[level] = round((semantic * 0.75) + (signal * 0.25), 4)
 
-    seniority, seniority_combined = combined_seniority(sen_scores, int(round(years)))
+    seniority, seniority_combined = combined_seniority(seniority_scores, int(round(years)))
 
     top_roles = sorted(role_scores, key=role_scores.get, reverse=True)[:2]
     if len(top_roles) < 2:
@@ -92,7 +87,7 @@ def enrich_cv(parsed: ParsedCV) -> EnrichedCV:
         "role_category_secondary": top_roles[1],
         "role_scores": {k: round(v, 3) for k, v in role_scores.items()},
         "seniority": seniority,
-        "seniority_scores": {k: round(v, 3) for k, v in sen_scores.items()},
+        "seniority_scores": {k: round(v, 3) for k, v in seniority_scores.items()},
         "seniority_combined": seniority_combined,
         "jobs": jobs,
         "total_exp_score": experience_score(years),
