@@ -147,3 +147,51 @@
 2026-05-13 15:08:06,427 INFO =============================================
 2026-05-13 15:08:16,397 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-05-13 15:08:16,421 INFO 127.0.0.1 - - [13/May/2026 15:08:16] "POST /score HTTP/1.1" 200 -
+2026-05-13 23:55:23,043 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-05-13 23:55:23,044 INFO [33mPress CTRL+C to quit[0m
+2026-05-13 23:56:02,343 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-05-13 23:56:02,343 INFO [33mPress CTRL+C to quit[0m
+2026-05-13 23:56:08,538 INFO 127.0.0.1 - - [13/May/2026 23:56:08] "GET / HTTP/1.1" 200 -
+2026-05-13 23:56:08,608 INFO 127.0.0.1 - - [13/May/2026 23:56:08] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-13 23:56:37,871 INFO 127.0.0.1 - - [13/May/2026 23:56:37] "[35m[1mPOST /score HTTP/1.1[0m" 500 -
+2026-05-13 23:56:38,037 INFO 127.0.0.1 - - [13/May/2026 23:56:38] "[36mGET /score?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-05-13 23:56:38,082 INFO 127.0.0.1 - - [13/May/2026 23:56:38] "[36mGET /score?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-05-13 23:56:38,123 INFO 127.0.0.1 - - [13/May/2026 23:56:38] "GET /score?__debugger__=yes&cmd=resource&f=console.png&s=1WNeDSlJ23axaS1Dyi30 HTTP/1.1" 200 -
+2026-05-13 23:56:38,133 INFO 127.0.0.1 - - [13/May/2026 23:56:38] "[36mGET /score?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2026-05-13 23:57:57,711 INFO 127.0.0.1 - - [13/May/2026 23:57:57] "[35m[1mPOST /score HTTP/1.1[0m" 500 -
+2026-05-13 23:57:57,734 INFO 127.0.0.1 - - [13/May/2026 23:57:57] "[36mGET /score?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-05-13 23:57:57,738 INFO 127.0.0.1 - - [13/May/2026 23:57:57] "[36mGET /score?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-05-13 23:57:57,752 INFO 127.0.0.1 - - [13/May/2026 23:57:57] "[36mGET /score?__debugger__=yes&cmd=resource&f=console.png&s=1WNeDSlJ23axaS1Dyi30 HTTP/1.1[0m" 304 -
+2026-05-13 23:58:26,228 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-05-13 23:58:26,228 INFO [33mPress CTRL+C to quit[0m
+2026-05-13 23:58:28,119 INFO 127.0.0.1 - - [13/May/2026 23:58:28] "GET / HTTP/1.1" 200 -
+2026-05-13 23:58:39,540 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,548 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,565 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,578 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,588 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,597 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,608 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,627 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,635 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,964 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,976 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:39,981 WARNING Could not get FontBBox from font descriptor because None cannot be parsed as 4 floats
+2026-05-13 23:58:42,752 INFO =============================================
+2026-05-13 23:58:42,752 INFO [extractor]  seniority       : junior
+2026-05-13 23:58:42,753 INFO [extractor]  years_experience: 1
+2026-05-13 23:58:42,753 INFO [extractor]  education       : high_school
+2026-05-13 23:58:42,753 INFO [extractor]  role_category   : software
+2026-05-13 23:58:42,754 INFO [extractor]  skills_count    : 8
+2026-05-13 23:58:42,754 INFO [extractor]  skills          : python, java, php, html, css, c, microsoft word, powerpoint
+2026-05-13 23:58:42,754 INFO [matcher]     skills_score    : 35.4%
+2026-05-13 23:58:42,754 INFO [matcher]     seniority_score : 75.0%
+2026-05-13 23:58:42,754 INFO [matcher]     experience_score: 50.0%
+2026-05-13 23:58:42,755 INFO [matcher]     education_score : 100.0%
+2026-05-13 23:58:42,755 INFO [matcher]     final_score     : 55.4%
+2026-05-13 23:58:42,755 INFO =============================================
+2026-05-13 23:58:53,931 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-13 23:58:54,118 INFO 127.0.0.1 - - [13/May/2026 23:58:54] "POST /score HTTP/1.1" 200 -

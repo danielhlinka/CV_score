@@ -27,6 +27,7 @@ def index():
 
 
 UPLOAD_FOLDER = "upload"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 @app.route('/score', methods=['POST'])
