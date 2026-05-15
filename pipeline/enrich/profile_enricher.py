@@ -10,15 +10,21 @@ from pipeline.enrich.semantic_similarity import Embedding, memoized_embedding, t
 
 @cache
 def _get_role_template_embeddings() -> dict[str, Embedding]:
+    """Compute and cache embeddings for each role template sentence.
+    Avoids repeated embedding calls across CV enrich operations."""
     return {role: memoized_embedding(template) for role, template in ROLE_TEMPLATES.items()}
 
 
 @cache
 def _get_seniority_template_embeddings() -> dict[str, Embedding]:
+    """Compute and cache embeddings for seniority template sentences.
+    Shared cache improves determinism and runtime efficiency."""
     return {level: memoized_embedding(template) for level, template in SENIORITY_TEMPLATES.items()}
 
 
 def _normalized_signal_scores(signals: dict[str, int]) -> dict[str, float]:
+    """Normalize integer keyword-signal counts into `[0, 1]` scores.
+    Preserves key set and handles empty/non-positive inputs safely."""
     if not signals:
         return {}
     max_value = max(signals.values())
@@ -28,6 +34,8 @@ def _normalized_signal_scores(signals: dict[str, int]) -> dict[str, float]:
 
 
 def enrich_cv(parsed: ParsedCV) -> EnrichedCV:
+    """Enrich parsed CV with semantic role/seniority and scoring helpers.
+    Combines normalized signals, template similarity, and experience data."""
     normalized = parsed["normalized"]
     skills = normalized.get("skills", [])
     jobs = normalized.get("experience_entries", [])

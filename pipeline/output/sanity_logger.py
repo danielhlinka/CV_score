@@ -8,6 +8,8 @@ logger = logging.getLogger("pipeline.sanity")
 
 
 def sanity_check(result: dict) -> None:
+    """Log extracted CV fields and scoring metrics for observability.
+    Emits guardrail warnings when outputs look suspicious or low-confidence."""
     cv = result.get("cv", {})
     breakdown = result.get("breakdown", {})
     score = result.get("final_score", 0)

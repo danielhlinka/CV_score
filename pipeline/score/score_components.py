@@ -6,6 +6,8 @@ from pipeline.enrich.semantic_similarity import best_cosine_score, memoized_embe
 
 
 def skills_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Score required-skill fit using exact and semantic matching signals.
+    Applies confidence-aware fallback when extraction produced no skills."""
     if not job["skills"]:
         return 1.0
     cv_skills = [skill.lower() for skill in cv.get("skills", [])]
@@ -31,6 +33,8 @@ def skills_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Score level alignment between CV and job seniority expectations.
+    Uses softer penalties when parser confidence is low."""
     cv_level = SENIORITY_LEVEL_RANK.get(cv.get("seniority", "junior"), 1)
     job_level = SENIORITY_LEVEL_RANK.get(job.get("seniority", "mid"), 2)
     diff = abs(cv_level - job_level)
@@ -43,6 +47,8 @@ def seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def experience_score_component(cv: EnrichedCV, job: JobProfile) -> float:
+    """Score years-of-experience sufficiency against job requirement.
+    Applies confidence-based guardrails for missing parsed experience."""
     job_years = job.get("years_required", 0)
     if job_years == 0:
         return 1.0
@@ -59,6 +65,8 @@ def experience_score_component(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def role_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Score role-category compatibility between CV and job profile.
+    Uses conservative defaults when either role signal is missing."""
     cv_role = cv.get("role_category", "").lower()
     job_role = job.get("role_category", "").lower()
     confidence = cv.get("parser_confidence", "low")
@@ -70,6 +78,8 @@ def role_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def education_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Score education-level coverage using configured rank ordering.
+    Penalizes only the level gap when CV falls below requirement."""
     cv_level = EDUCATION_LEVEL_RANK.get(cv.get("education", "none"), 0)
     job_level = EDUCATION_LEVEL_RANK.get(job.get("education", "none"), 0)
     if cv_level >= job_level:

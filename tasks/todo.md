@@ -138,3 +138,14 @@ Verification: `venv/bin/python -m py_compile` passed for updated pipeline/web mo
 Verification: `venv/bin/python -m compileall -q app.py main.py web pipeline tests` passed.
 Verification: `venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v` passed (24/24).
 Verification: representative CV smoke output remains unchanged (`final_score=1.0`, `skills=1.0`, `seniority=1.0`, `experience=1.0`, `role=data`, `years=6.67`, `parser_confidence=high`, `warnings=1`).
+
+Issue 11: stale-code cleanup and function-level readability comments before final commit.
+Review notes: objective is to remove only provably dead code paths and add concise 2-3 line function docstrings without changing behavior.
+Plan item 59 [x] Map runtime function usage and identify stale code by call-site evidence across app, web, pipeline, and tests.
+Plan item 60 [x] Remove confirmed stale functions/code and keep backward-compatible exports intact.
+Plan item 61 [x] Add concise function comments across active runtime modules and verify full regression suite.
+Fix notes: removed dead `validate_text`, `extract_sections`, and related regex/header constants from `pipeline/extractor.py` (no internal or test call sites).
+Fix notes: added 2-3 line docstrings to runtime functions/methods across web and pipeline modules, including orchestration protocols, parsers, enrichers, scorers, upload lifecycle, and explainers.
+Verification: static docstring audit shows no missing function docstrings outside tests (`TOTAL_MISSING=0`).
+Verification: `venv/bin/python -m compileall -q app.py main.py web pipeline tests` passed.
+Verification: `venv/bin/python -m unittest discover -s tests -p 'test_*.py' -q` passed (24/24).

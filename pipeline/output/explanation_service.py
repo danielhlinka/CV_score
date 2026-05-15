@@ -18,10 +18,14 @@ ClientFactory = Callable[[str], Any]
 
 
 def _build_openai_client(api_key: str) -> OpenAI:
+    """Construct an OpenAI client scoped to the provided API key.
+    Isolated factory keeps explainer dependency injection testable."""
     return OpenAI(api_key=api_key)
 
 
 def _build_prompt(result: Mapping[str, Any]) -> str:
+    """Create the structured LLM prompt from scored CV/job payload data.
+    Enforces a stable output template for downstream rendering."""
     cv = result["cv"]
     job = result["job"]
     breakdown = result["breakdown"]
@@ -73,6 +77,8 @@ Use exactly this format:
 
 
 def _extract_response_content(response: Any) -> str:
+    """Extract plain message content from OpenAI chat completion payload.
+    Returns empty string when response shape is missing expected fields."""
     choices = getattr(response, "choices", None)
     if not choices:
         return ""
@@ -88,6 +94,8 @@ class OpenAIExplainer:
     client_factory: ClientFactory = _build_openai_client
 
     def explain(self, result: dict) -> str:
+        """Generate a natural-language explanation for a scoring result.
+        Falls back to safe messages on missing key or API/runtime failures."""
         prompt = _build_prompt(result)
         api_key = os.getenv(self.api_key_env_var)
         if not api_key:
@@ -114,4 +122,6 @@ DEFAULT_EXPLAINER = OpenAIExplainer()
 
 
 def explain(result: dict) -> str:
+    """Module-level compatibility wrapper for the default explainer.
+    Preserves stable `explain(result)` import path across refactors."""
     return DEFAULT_EXPLAINER.explain(result)

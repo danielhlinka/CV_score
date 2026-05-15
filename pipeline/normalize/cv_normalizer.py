@@ -11,6 +11,8 @@ from pipeline.normalize.skills_parser import extract_skills
 
 
 def _keyword_signals(text: str, mapping: dict[str, tuple[str, ...]]) -> dict[str, int]:
+    """Count whole-word keyword hits for each taxonomy bucket.
+    Produces deterministic signal counts used in role/seniority hints."""
     lowered = text.lower()
     signals: dict[str, int] = {}
     for key, keywords in mapping.items():
@@ -27,6 +29,8 @@ def _determine_parser_confidence(
     skills_count: int,
     has_experience_entries: bool,
 ) -> ConfidenceLevel:
+    """Derive overall parser confidence from extraction evidence quality.
+    Downgrades confidence when supporting signals are sparse."""
     parser_confidence = experience_confidence
     if parser_confidence == "high" and skills_count < 2:
         parser_confidence = "medium"
@@ -41,6 +45,8 @@ def _build_normalizer_warnings(
     skills: list[str],
     education: str,
 ) -> list[str]:
+    """Assemble user-facing warnings about weak extraction outcomes.
+    Combines experience warnings with missing skills/education hints."""
     warnings = list(experience_warnings)
     if not skills:
         warnings.append("No skills detected from CV text.")
@@ -50,6 +56,8 @@ def _build_normalizer_warnings(
 
 
 def normalize_cv_text(raw_text: str) -> NormalizedCV:
+    """Normalize raw CV text into structured fields for scoring/enrichment.
+    Aggregates contact, experience, skills, education, and confidence data."""
     experience_entries, experience_years, experience_conf, exp_warnings = parse_experience_entries(raw_text)
 
     skills = extract_skills(raw_text)

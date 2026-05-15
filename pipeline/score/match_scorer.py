@@ -12,6 +12,8 @@ from pipeline.score.score_weights import WEIGHTS
 
 
 def match(cv: EnrichedCV, job: JobProfile) -> MatchResult:
+    """Combine weighted score components into a final match result.
+    Preserves parser confidence metadata for downstream consumers."""
     scores: ScoreBreakdown = {
         "skills": skills_score(cv, job),
         "seniority": seniority_score(cv, job),

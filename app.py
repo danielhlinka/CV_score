@@ -16,6 +16,8 @@ logging.basicConfig(
 
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
+    """Build the Flask app with centralized runtime configuration.
+    Applies optional test overrides and ensures upload storage exists."""
     app = Flask(__name__)
     app.config.from_mapping(runtime_config(Path(__file__).resolve().parent))
 

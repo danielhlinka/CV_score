@@ -2,6 +2,8 @@ from __future__ import annotations
 
 
 def extract_education(text: str) -> str:
+    """Infer highest education level from keyword evidence in CV text.
+    Returns a normalized level label consumed by scoring rules."""
     text_lower = text.lower()
 
     if any(keyword in text_lower for keyword in ["phd", "ph.d", "doc.", "prof.", "doctorate"]):

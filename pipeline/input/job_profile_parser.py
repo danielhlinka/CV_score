@@ -15,6 +15,8 @@ def _normalized_choice(
     allowed_values: Set[str],
     default: str,
 ) -> str:
+    """Normalize an enum-like form field and enforce allowed values.
+    Returns a safe default when the input is blank."""
     candidate = (value or "").strip().lower()
     if not candidate:
         return default
@@ -26,6 +28,8 @@ def _normalized_choice(
 
 
 def _parse_years_required(form: Mapping[str, str]) -> int:
+    """Parse and validate the optional years-of-experience requirement.
+    Rejects non-numeric, negative, and unrealistic values early."""
     raw_years = str(form.get("years_required", "")).strip()
     if raw_years == "":
         return 0
@@ -42,6 +46,8 @@ def _parse_years_required(form: Mapping[str, str]) -> int:
 
 
 def parse_job(form: Mapping[str, str]) -> JobProfile:
+    """Build the canonical job-profile contract from web form inputs.
+    Normalizes casing, deduplicates skills, and validates taxonomy fields."""
     job_title = str(form.get("job_title", "")).strip()
     if not job_title:
         raise BadRequest("'job_title' is required.")

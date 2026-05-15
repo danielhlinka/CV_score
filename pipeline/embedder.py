@@ -12,15 +12,21 @@ from pipeline.semantic import Embedding, memoized_embedding, template_scores
 
 @cache
 def _get_role_template_embeddings() -> dict[str, Embedding]:
+    """Compute cached embeddings for legacy role template access path.
+    Maintained for backward compatibility with older import sites/tests."""
     return {role: memoized_embedding(template) for role, template in ROLE_TEMPLATES.items()}
 
 
 @cache
 def _get_seniority_template_embeddings() -> dict[str, Embedding]:
+    """Compute cached embeddings for legacy seniority templates.
+    Mirrors behavior of the reorganized enrichment module."""
     return {level: memoized_embedding(template) for level, template in SENIORITY_TEMPLATES.items()}
 
 
 def _normalized_signal_scores(signals: dict[str, int]) -> dict[str, float]:
+    """Normalize keyword count signals for backward-compatible scoring.
+    Handles empty and zero-valued maps without division errors."""
     if not signals:
         return {}
     max_value = max(signals.values())
@@ -30,6 +36,8 @@ def _normalized_signal_scores(signals: dict[str, int]) -> dict[str, float]:
 
 
 def enrich_cv(parsed: ParsedCV) -> EnrichedCV:
+    """Legacy enrichment entrypoint kept stable for compatibility.
+    Produces the same enriched payload contract as before refactor."""
     normalized = parsed["normalized"]
     skills = normalized.get("skills", [])
     jobs = normalized.get("experience_entries", [])

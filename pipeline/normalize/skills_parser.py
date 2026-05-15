@@ -68,6 +68,8 @@ KNOWN_SKILLS = [
 
 
 def extract_skills(text: str) -> list[str]:
+    """Extract canonical skills from CV text using variant dictionaries.
+    Deduplicates while preserving first-seen ordering for readability."""
     text_lower = text.lower()
     found: list[str] = []
     seen: set[str] = set()

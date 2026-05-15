@@ -50,6 +50,8 @@ class _ParsedDateToken:
 
     @property
     def month_index(self) -> int:
+        """Convert parsed year/month into a monotonic month index.
+        Enables easy interval comparison and duration calculations."""
         return _to_month_index(self.year, self.month)
 
 
@@ -67,9 +69,13 @@ class _ExperienceCandidate:
 
     @property
     def dedupe_key(self) -> tuple[str, int, int]:
+        """Build stable key for candidate deduplication across lines.
+        Uses title and month boundaries to collapse duplicates."""
         return (self.title.lower(), self.start_index, self.end_index)
 
     def as_entry(self) -> ExperienceEntry:
+        """Convert internal candidate into public contract shape.
+        Keeps normalization output detached from parser internals."""
         return {
             "title": self.title,
             "start_year": self.start_year,
@@ -80,6 +86,8 @@ class _ExperienceCandidate:
 
 
 def _is_noise_line(text: str) -> bool:
+    """Detect lines unlikely to represent a job title or context.
+    Filters empty, punctuation-only, contact, and navigation fragments."""
     stripped = text.strip()
     if not stripped:
         return True
@@ -95,6 +103,8 @@ def _is_noise_line(text: str) -> bool:
 
 
 def _parse_date_token(token: str, *, is_start: bool, now: datetime) -> tuple[int, int] | None:
+    """Parse flexible date token into `(year, month)` pair.
+    Supports MM/YYYY, YYYY, and localized present/current terms."""
     lower = token.lower().strip()
     if lower in PRESENT_TOKENS:
         return now.year, now.month
@@ -115,16 +125,22 @@ def _parse_date_token(token: str, *, is_start: bool, now: datetime) -> tuple[int
 
 
 def _to_month_index(year: int, month: int) -> int:
+    """Map `(year, month)` to an integer timeline coordinate.
+    Simplifies interval overlap and ordering logic."""
     return year * 12 + (month - 1)
 
 
 def _resolve_line_context(lines: list[str], index: int) -> tuple[str, str]:
+    """Return neighboring lines around current line index.
+    Context is used for education/work disambiguation heuristics."""
     prev_line = lines[index - 1].strip() if index > 0 else ""
     next_line = lines[index + 1].strip() if index + 1 < len(lines) else ""
     return prev_line, next_line
 
 
 def _has_work_and_education_context(context_text: str, prefix_text: str) -> tuple[bool, bool]:
+    """Estimate whether date range belongs to education, work, or both.
+    Combines regex context with short-prefix title heuristics."""
     has_education_context = bool(EDUCATION_CONTEXT_PATTERN.search(context_text))
     has_work_context = bool(WORK_CONTEXT_PATTERN.search(context_text))
 
@@ -135,6 +151,8 @@ def _has_work_and_education_context(context_text: str, prefix_text: str) -> tupl
 
 
 def _resolve_title(prefix_text: str, prev_line: str) -> str:
+    """Choose best available title text for parsed experience candidate.
+    Falls back to previous line and returns `unknown` when ambiguous."""
     title = prefix_text
     if (not title or _is_noise_line(title)) and prev_line and not _is_noise_line(prev_line):
         title = prev_line
@@ -149,6 +167,8 @@ def _parse_date_tokens(
     *,
     now: datetime,
 ) -> tuple[_ParsedDateToken, _ParsedDateToken] | None:
+    """Parse and validate start/end date tokens as ordered range.
+    Rejects ranges where end precedes start or token parsing fails."""
     parsed_start = _parse_date_token(start_token, is_start=True, now=now)
     parsed_end = _parse_date_token(end_token, is_start=False, now=now)
     if not parsed_start or not parsed_end:
@@ -170,6 +190,8 @@ def _build_candidate_from_match(
     match: re.Match[str],
     now: datetime,
 ) -> tuple[_ExperienceCandidate | None, bool]:
+    """Create a typed experience candidate from regex date-range match.
+    Returns `(candidate, skipped_as_education)` for caller bookkeeping."""
     prefix_text = line[: match.start()].strip(" ,|:-–—")
     context_text = f"{prev_line} {line} {next_line}".strip()
     has_education_context, has_work_context = _has_work_and_education_context(context_text, prefix_text)
@@ -203,6 +225,8 @@ def _build_candidate_from_match(
 
 
 def _deduplicate_candidates(candidates: list[_ExperienceCandidate]) -> list[_ExperienceCandidate]:
+    """Remove duplicate candidates emitted from overlapping text fragments.
+    Keeps one candidate per title/date key and sorts by start date."""
     deduplicated: dict[tuple[str, int, int], _ExperienceCandidate] = {}
     for candidate in candidates:
         deduplicated[candidate.dedupe_key] = candidate
@@ -213,6 +237,8 @@ def _deduplicate_candidates(candidates: list[_ExperienceCandidate]) -> list[_Exp
 
 
 def _merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """Merge overlapping or adjacent month intervals into compact ranges.
+    Prevents double-counting when summing total experience months."""
     merged: list[tuple[int, int]] = []
     for start, end in intervals:
         if not merged:
@@ -230,6 +256,8 @@ def _merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:
 def _determine_experience_confidence(
     entries: list[_ExperienceCandidate], total_years: float
 ) -> ConfidenceLevel:
+    """Estimate confidence from number and quality of parsed entries.
+    Rewards multiple titled entries and non-trivial total duration."""
     recognized_titles = sum(1 for entry in entries if entry.title != "unknown")
     if len(entries) >= 2 and total_years >= 1 and recognized_titles >= 1:
         return "high"
@@ -241,6 +269,8 @@ def _determine_experience_confidence(
 def _build_experience_warnings(
     *, skipped_education_ranges: int, confidence: ConfidenceLevel
 ) -> list[str]:
+    """Build warnings explaining uncertainty in extracted experience data.
+    Includes explicit notes for education-range exclusions."""
     warnings: list[str] = []
     if skipped_education_ranges:
         warnings.append(
@@ -252,6 +282,8 @@ def _build_experience_warnings(
 
 
 def _clean_experience_entries(entries: list[_ExperienceCandidate]) -> list[ExperienceEntry]:
+    """Convert and order parsed candidates for output contract.
+    Returns newest entries first for easier downstream inspection."""
     return [
         candidate.as_entry()
         for candidate in sorted(entries, key=lambda candidate: candidate.start_index, reverse=True)
@@ -259,6 +291,8 @@ def _clean_experience_entries(entries: list[_ExperienceCandidate]) -> list[Exper
 
 
 def parse_experience_entries(text: str) -> tuple[list[ExperienceEntry], float, ConfidenceLevel, list[str]]:
+    """Extract work-experience intervals and aggregate total years.
+    Applies education filtering, deduplication, and confidence scoring."""
     now = datetime.now()
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     candidates: list[_ExperienceCandidate] = []

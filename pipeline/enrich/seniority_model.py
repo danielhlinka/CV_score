@@ -4,10 +4,14 @@ import math
 
 
 def experience_score(years: float, k: float = 3.0) -> float:
+    """Map years of experience to smooth saturation score in `[0, 1]`.
+    Provides stable monotonic contribution for enrichment outputs."""
     return round(1 - math.exp(-years / k), 3)
 
 
 def _bell(years: float, peak: float, width: float) -> float:
+    """Evaluate bell-curve affinity for a target seniority band.
+    Higher values indicate closer fit around the configured peak."""
     return math.exp(-((years - peak) ** 2) / width)
 
 
@@ -21,6 +25,8 @@ LEVEL_CURVES = {
 
 
 def combined_seniority(sen_scores: dict[str, float], years: int) -> tuple[str, dict[str, float]]:
+    """Blend semantic seniority scores with experience-year priors.
+    Returns best level and full combined-score map."""
     combined = {}
     for level, curve in LEVEL_CURVES.items():
         emb = sen_scores.get(level, 0.0)

@@ -9,7 +9,8 @@ SUPPORTED_EXTENSIONS = {".pdf", ".docx"}
 
 
 def extract_text(file_path: str) -> str:
-    """Extract raw text from a PDF or DOCX file."""
+    """Extract plain text from supported CV file types.
+    Dispatches to format-specific readers with explicit extension checks."""
     extension = Path(file_path).suffix.lower()
     if extension not in SUPPORTED_EXTENSIONS:
         raise ValueError(f"Unsupported file type: {extension}. Use PDF or DOCX.")
@@ -19,6 +20,8 @@ def extract_text(file_path: str) -> str:
 
 
 def _extract_from_pdf(file_path: str) -> str:
+    """Read PDF pages and concatenate non-empty extracted text blocks.
+    Raises when no text is available, e.g., scanned image-only files."""
     text_parts: list[str] = []
     with pdfplumber.open(file_path) as pdf:
         for page in pdf.pages:
@@ -31,6 +34,8 @@ def _extract_from_pdf(file_path: str) -> str:
 
 
 def _extract_from_docx(file_path: str) -> str:
+    """Read textual content from DOCX paragraphs and table cells.
+    Returns a newline-separated representation for downstream parsing."""
     doc = Document(file_path)
     parts: list[str] = []
 

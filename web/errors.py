@@ -14,17 +14,23 @@ logger = logging.getLogger(__name__)
 
 
 def is_html_request() -> bool:
+    """Detect whether the caller prefers HTML over JSON responses.
+    Used to keep browser form UX and API-style callers both supported."""
     accept = request.accept_mimetypes
     return accept["text/html"] >= accept["application/json"]
 
 
 def error_response(message: str, status_code: int) -> tuple[Any, int]:
+    """Build a unified error payload for browser and non-browser clients.
+    Renders template errors for HTML requests and JSON otherwise."""
     if is_html_request():
         return render_template("index.html", error_message=message), status_code
     return {"error": message}, status_code
 
 
 def register_error_handlers(app: Flask) -> None:
+    """Register all HTTP and unexpected error handlers on the app.
+    Preserves consistent response schema and user-facing messaging."""
     @app.errorhandler(RequestEntityTooLarge)
     def handle_request_too_large(exc: RequestEntityTooLarge):
         _ = exc

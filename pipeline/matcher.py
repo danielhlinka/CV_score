@@ -18,6 +18,8 @@ WEIGHTS = {
 
 
 def _skills_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Legacy skills component scorer kept for import compatibility.
+    Blends exact skill hits with semantic fallback similarity."""
     if not job["skills"]:
         return 1.0
     cv_skills = [skill.lower() for skill in cv.get("skills", [])]
@@ -43,6 +45,8 @@ def _skills_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def _seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Legacy seniority scorer with parser-confidence-aware penalties.
+    Retained to preserve historical behavior and tests."""
     cv_level = SENIORITY_LEVEL_RANK.get(cv.get("seniority", "junior"), 1)
     job_level = SENIORITY_LEVEL_RANK.get(job.get("seniority", "mid"), 2)
     diff = abs(cv_level - job_level)
@@ -55,6 +59,8 @@ def _seniority_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def _experience_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Legacy experience-years scorer for backward-compatible imports.
+    Keeps conservative fallbacks when parsed years are missing."""
     job_years = job.get("years_required", 0)
     if job_years == 0:
         return 1.0
@@ -71,6 +77,8 @@ def _experience_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def _role_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Legacy role-category alignment scorer.
+    Uses confidence-based defaults for uncertain parser output."""
     cv_role  = cv.get("role_category", "").lower()
     job_role = job.get("role_category", "").lower()
     confidence = cv.get("parser_confidence", "low")
@@ -82,6 +90,8 @@ def _role_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def _education_score(cv: EnrichedCV, job: JobProfile) -> float:
+    """Legacy education scorer based on ranked education levels.
+    Penalizes only the gap below required education threshold."""
     cv_level = EDUCATION_LEVEL_RANK.get(cv.get("education", "none"), 0)
     job_level = EDUCATION_LEVEL_RANK.get(job.get("education", "none"), 0)
     if cv_level >= job_level:
@@ -91,6 +101,8 @@ def _education_score(cv: EnrichedCV, job: JobProfile) -> float:
 
 
 def match(cv: EnrichedCV, job: JobProfile) -> MatchResult:
+    """Legacy match aggregator kept stable for existing call sites.
+    Computes weighted final score and attaches parser metadata."""
     scores: ScoreBreakdown = {
         "skills":     _skills_score(cv, job),
         "seniority":  _seniority_score(cv, job),
