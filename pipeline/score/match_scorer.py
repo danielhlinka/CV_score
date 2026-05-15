@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pipeline.contracts import EnrichedCV, JobProfile, MatchResult, ScoreBreakdown
+from pipeline.lib.contracts import EnrichedCV, JobProfile, MatchResult, ScoreBreakdown
 from pipeline.score.score_components import (
     education_score,
     experience_score_component,

@@ -1,6 +1,6 @@
 import unittest
 
-from pipeline.normalizer import normalize_cv_text
+from pipeline.lib.normalizer import normalize_cv_text
 
 
 class NormalizerBehaviorTests(unittest.TestCase):

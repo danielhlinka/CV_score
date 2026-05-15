@@ -4,8 +4,8 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 
-from pipeline.constants import ConfidenceLevel
-from pipeline.contracts import ExperienceEntry
+from pipeline.lib.constants import ConfidenceLevel
+from pipeline.lib.contracts import ExperienceEntry
 
 PRESENT_TOKENS = {"present", "current", "now", "dnes", "soucasnost", "současnost", "sucasnost", "súčasnosť"}
 

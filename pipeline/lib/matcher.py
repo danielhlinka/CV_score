@@ -6,7 +6,7 @@ from pipeline import (
     ScoreBreakdown,
     SENIORITY_LEVEL_RANK,
 )
-from pipeline.semantic import best_cosine_score, memoized_embedding
+from pipeline.lib.semantic import best_cosine_score, memoized_embedding
 
 WEIGHTS = {
     "skills":     0.40,

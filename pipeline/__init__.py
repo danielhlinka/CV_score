@@ -1,4 +1,4 @@
-from pipeline.constants import (
+from pipeline.lib.constants import (
     ConfidenceLevel,
     EducationLevel,
     EDUCATION_LEVEL_RANK,
@@ -18,7 +18,7 @@ from pipeline.constants import (
     VALID_ROLE_CATEGORIES,
     VALID_SENIORITY,
 )
-from pipeline.contracts import (
+from pipeline.lib.contracts import (
     ContactInfo,
     EnrichedCV,
     ExperienceEntry,

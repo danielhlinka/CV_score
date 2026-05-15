@@ -5,7 +5,7 @@ from pathlib import Path
 from flask import Blueprint, current_app, render_template, request
 from werkzeug.exceptions import InternalServerError, UnprocessableEntity
 
-from pipeline.extractor import SUPPORTED_EXTENSIONS
+from pipeline.lib.extractor import SUPPORTED_EXTENSIONS
 from web.scoring_service import ScoringOrchestrationService, build_scoring_orchestration_service
 from web.uploads import UploadLifecycle
 

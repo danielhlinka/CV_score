@@ -8,7 +8,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from pipeline.constants import ROLE_CATEGORIES, RoleCategory
+from pipeline.lib.constants import ROLE_CATEGORIES, RoleCategory
 
 _CATEGORY_EMBEDDINGS: dict[str, np.ndarray] = {}
 

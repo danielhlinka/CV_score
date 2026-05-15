@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import NotRequired, TypedDict
 
-from pipeline.constants import ConfidenceLevel, EducationLevel, JobRoleCategory, SeniorityLevel
+from pipeline.lib.constants import ConfidenceLevel, EducationLevel, JobRoleCategory, SeniorityLevel
 
 
 class ContactInfo(TypedDict):

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from pipeline.constants import VALID_SENIORITY
+from pipeline.lib.constants import VALID_SENIORITY
 
 logger = logging.getLogger("pipeline.sanity")
 

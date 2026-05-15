@@ -3,7 +3,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from pipeline import explainer
+from pipeline.lib import explainer
 
 
 def _sample_result() -> dict:

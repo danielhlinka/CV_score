@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 from werkzeug.exceptions import BadRequest
 
 from app import create_app
-from pipeline.extractor import extract_skills
-from pipeline.job_parser import parse_job
+from pipeline.lib.extractor import extract_skills
+from pipeline.lib.job_parser import parse_job
 
 
 class CoreBehaviorTests(unittest.TestCase):

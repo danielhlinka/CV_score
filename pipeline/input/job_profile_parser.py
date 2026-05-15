@@ -4,8 +4,8 @@ from collections.abc import Mapping, Set
 
 from werkzeug.exceptions import BadRequest
 
-from pipeline.constants import VALID_EDUCATION, VALID_ROLE_CATEGORIES, VALID_SENIORITY
-from pipeline.contracts import JobProfile
+from pipeline.lib.constants import VALID_EDUCATION, VALID_ROLE_CATEGORIES, VALID_SENIORITY
+from pipeline.lib.contracts import JobProfile
 
 
 def _normalized_choice(

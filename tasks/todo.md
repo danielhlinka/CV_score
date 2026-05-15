@@ -149,3 +149,13 @@ Fix notes: added 2-3 line docstrings to runtime functions/methods across web and
 Verification: static docstring audit shows no missing function docstrings outside tests (`TOTAL_MISSING=0`).
 Verification: `venv/bin/python -m compileall -q app.py main.py web pipeline tests` passed.
 Verification: `venv/bin/python -m unittest discover -s tests -p 'test_*.py' -q` passed (24/24).
+
+Issue 12: move selected pipeline modules into `pipeline/lib` and update imports only.
+Plan item 62 [x] Confirm target files and resolve `sematic.py` naming (use existing `semantic.py` as intended target).
+Plan item 63 [x] Create `pipeline/lib/` and move requested modules without code changes.
+Plan item 64 [x] Update all Python imports and test patch targets to new `pipeline.lib.*` module paths.
+Plan item 65 [x] Verify there are no stale references to old module paths and run compile/tests.
+Review notes: completed as pure module relocation with import rewrites only; runtime logic was not changed.
+Verification: `rg` found no stale references to `pipeline.(constants|contracts|embedder|embeddings|experience|explainer|job_parser|extractor|matcher|normalizer|parser|sanity_check|semantic)`.
+Verification: `venv/bin/python -m compileall -q app.py main.py web pipeline tests` passed.
+Verification: `venv/bin/python -m unittest discover -s tests -p 'test_*.py' -q` passed (24/24).

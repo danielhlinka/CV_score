@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Protocol
 
-from pipeline.contracts import EnrichedCV, JobProfile, MatchResult, ParsedCV
+from pipeline.lib.contracts import EnrichedCV, JobProfile, MatchResult, ParsedCV
 
 
 class JobParserStep(Protocol):
@@ -102,7 +102,7 @@ def build_scoring_orchestration_service() -> ScoringOrchestrationService:
     from pipeline.input.job_profile_parser import parse_job
     from pipeline.output.explanation_service import explain
     from pipeline.output.sanity_logger import sanity_check
-    from pipeline.parser import parse_cv
+    from pipeline.lib.parser import parse_cv
     from pipeline.score.match_scorer import match
 
     return ScoringOrchestrationService(

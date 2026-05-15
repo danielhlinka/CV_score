@@ -6,8 +6,8 @@ from pipeline import (
     ROLE_TEMPLATES,
     SENIORITY_TEMPLATES,
 )
-from pipeline.experience import combined_seniority, experience_score
-from pipeline.semantic import Embedding, memoized_embedding, template_scores
+from pipeline.lib.experience import combined_seniority, experience_score
+from pipeline.lib.semantic import Embedding, memoized_embedding, template_scores
 
 
 @cache

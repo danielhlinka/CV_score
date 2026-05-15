@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pipeline.contracts import ParsedCV
+from pipeline.lib.contracts import ParsedCV
 from pipeline.normalize.cv_normalizer import normalize_cv_text
 
 

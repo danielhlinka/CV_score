@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pipeline.constants import EDUCATION_LEVEL_RANK, SENIORITY_LEVEL_RANK
-from pipeline.contracts import EnrichedCV, JobProfile
+from pipeline.lib.constants import EDUCATION_LEVEL_RANK, SENIORITY_LEVEL_RANK
+from pipeline.lib.contracts import EnrichedCV, JobProfile
 from pipeline.enrich.semantic_similarity import best_cosine_score, memoized_embedding
 
 

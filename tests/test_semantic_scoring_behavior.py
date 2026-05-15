@@ -3,10 +3,10 @@ from unittest.mock import patch
 
 import numpy as np
 
-import pipeline.embedder as embedder_module
+import pipeline.lib.embedder as embedder_module
 from pipeline import ROLE_TEMPLATES, SENIORITY_TEMPLATES
-from pipeline.embedder import enrich_cv
-from pipeline.matcher import _experience_score, _skills_score
+from pipeline.lib.embedder import enrich_cv
+from pipeline.lib.matcher import _experience_score, _skills_score
 
 
 class SemanticScoringBehaviorTests(unittest.TestCase):
@@ -49,11 +49,11 @@ class SemanticScoringBehaviorTests(unittest.TestCase):
             "sql": np.array([0.0, 1.0]),
         }
 
-        with patch("pipeline.matcher.memoized_embedding", side_effect=lambda text: vectors[text]):
+        with patch("pipeline.lib.matcher.memoized_embedding", side_effect=lambda text: vectors[text]):
             self.assertEqual(_skills_score(cv, job), 0.75)
 
-    @patch("pipeline.embedder.experience_score", return_value=0.88)
-    @patch("pipeline.embedder.combined_seniority", return_value=("mid", {"mid": 0.9}))
+    @patch("pipeline.lib.embedder.experience_score", return_value=0.88)
+    @patch("pipeline.lib.embedder.combined_seniority", return_value=("mid", {"mid": 0.9}))
     def test_embedder_template_cache_and_output_schema_stay_stable(
         self,
         _combined_seniority,
@@ -93,7 +93,7 @@ class SemanticScoringBehaviorTests(unittest.TestCase):
             },
         }
 
-        with patch("pipeline.embedder.memoized_embedding", side_effect=fake_embedding) as mocked_embedding:
+        with patch("pipeline.lib.embedder.memoized_embedding", side_effect=fake_embedding) as mocked_embedding:
             result_one = enrich_cv(parsed)
             result_two = enrich_cv(parsed)
 

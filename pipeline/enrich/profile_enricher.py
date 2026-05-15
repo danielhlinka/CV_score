@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from functools import cache
 
-from pipeline.constants import ROLE_TEMPLATES, SENIORITY_TEMPLATES
-from pipeline.contracts import EnrichedCV, ParsedCV
+from pipeline.lib.constants import ROLE_TEMPLATES, SENIORITY_TEMPLATES
+from pipeline.lib.contracts import EnrichedCV, ParsedCV
 from pipeline.enrich.seniority_model import combined_seniority, experience_score
 from pipeline.enrich.semantic_similarity import Embedding, memoized_embedding, template_scores
 

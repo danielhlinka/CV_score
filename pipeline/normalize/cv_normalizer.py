@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import re
 
-from pipeline.constants import ConfidenceLevel, ROLE_SIGNAL_KEYWORDS, SENIORITY_SIGNAL_KEYWORDS
-from pipeline.contracts import NormalizedCV
+from pipeline.lib.constants import ConfidenceLevel, ROLE_SIGNAL_KEYWORDS, SENIORITY_SIGNAL_KEYWORDS
+from pipeline.lib.contracts import NormalizedCV
 from pipeline.normalize.contact_parser import extract_email, extract_phone
 from pipeline.normalize.education_parser import extract_education
 from pipeline.normalize.experience_parser import parse_experience_entries
